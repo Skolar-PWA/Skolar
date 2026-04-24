@@ -1,0 +1,47 @@
+# This file tells GitHub: "Every time someone pushes code, run these checks."
+# GitHub runs this on THEIR computer (Linux), not yours. It takes ~2 minutes.
+# You can watch it run on GitHub → your repo → "Actions" tab at the top.
+
+name: CI   # Name shown in the GitHub UI. Can be anything.
+
+# WHEN should this run?
+on:
+  push:            # Every single push to any branch
+  pull_request:    # Every pull request (not used yet, but safe to have)
+
+jobs:
+  check:                       # Name of this job. You can call it anything.
+    runs-on: ubuntu-latest     # Run on a free Linux computer provided by GitHub
+
+    steps:
+      # 1. Download the code from this repo onto GitHub's computer
+      - name: Download the code
+        uses: actions/checkout@v4
+
+      # 2. Install pnpm (the tool that installs our libraries)
+      #    Version comes from package.json's "packageManager" field.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      # 3. Install Node.js (JavaScript runtime)
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm           # Cache downloads so next run is faster
+
+      # 4. Install all the libraries our code needs (same as `pnpm install` on your laptop)
+      - name: Install libraries
+        run: pnpm install --frozen-lockfile
+
+      # 5. Generate Prisma's database client code (needed before typecheck)
+      - name: Generate Prisma client
+        run: pnpm --filter @eduportal/api prisma:generate
+
+      # 6. Check that TypeScript has no type errors anywhere in the project
+      - name: Check types
+        run: pnpm typecheck
+
+      # 7. Try to build the whole project — if this fails, the PR is broken
+      - name: Build everything
+        run: pnpm build

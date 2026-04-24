@@ -1,0 +1,30 @@
+{
+  "name": "eduportal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EduPortal — modern school management PWA for Pakistan",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "api:dev": "pnpm --filter @eduportal/api dev",
+    "web:dev": "pnpm --filter @eduportal/web dev",
+    "landing:dev": "pnpm --filter @eduportal/landing dev",
+    "prisma:generate": "pnpm --filter @eduportal/api prisma:generate",
+    "prisma:migrate": "pnpm --filter @eduportal/api prisma:migrate",
+    "prisma:seed": "pnpm --filter @eduportal/api prisma:seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "turbo": "^2.3.3",
+    "typescript": "^5.6.3"
+  }
+}
