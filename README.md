@@ -198,3 +198,8 @@ No rush to read it — `README.md` (this file) is enough to get work done. `GUID
 ---
 
 That's everything. If you ever feel lost, read this file again. No other docs to worry about.
+
+
+
+
+Ali Huzaifa
