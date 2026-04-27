@@ -1,9 +1,7 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import { Particles } from '../components/Particles';
 
-const TITLE_TOP = 'Modernize Your School.'.split(' ');
-const TITLE_BOTTOM = 'Run Everything in One Place.'.split(' ');
+const TITLE_TOP = 'Streamline Your'.split(' ');
+const TITLE_BOTTOM = 'School Operations'.split(' ');
 
 function AnimatedWords({ words, delay = 0 }: { words: string[]; delay?: number }) {
   return (
@@ -11,9 +9,9 @@ function AnimatedWords({ words, delay = 0 }: { words: string[]; delay?: number }
       {words.map((w, i) => (
         <motion.span
           key={`${w}-${i}`}
-          initial={{ y: 40, opacity: 0 }}
+          initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: delay + i * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.5, delay: delay + i * 0.05 }}
           style={{ display: 'inline-block', marginRight: '0.25em' }}
         >
           {w}
@@ -26,239 +24,196 @@ function AnimatedWords({ words, delay = 0 }: { words: string[]; delay?: number }
 export function Hero() {
   return (
     <section
-      id="top"
       style={{
         position: 'relative',
-        minHeight: '100vh',
-        background: '#0A0F1E',
+        minHeight: '90vh',
+        background: '#81D4FA',
         color: '#fff',
         display: 'flex',
         alignItems: 'center',
-        paddingTop: 120,
-        paddingBottom: 80,
+        padding: '100px 20px',
         overflow: 'hidden',
+        fontFamily: '"Inter", "Segoe UI", sans-serif'
       }}
     >
-      <div className="glow-orb" />
-      <Particles count={38} />
+      {/* Decorative Background Elements */}
+      <div style={{
+        position: 'absolute',
+        top: '10%',
+        right: '2%',
+        width: '500px',
+        height: '500px',
+        border: '8px solid rgba(255,255,255,0.2)',
+        borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
+        pointerEvents: 'none',
+        transform: 'rotate(15deg)'
+      }} />
 
-      <div className="container" style={{ position: 'relative', textAlign: 'center' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ marginBottom: 24, display: 'flex', justifyContent: 'center' }}
-        >
-          <div className="pill">
-            <Sparkles size={14} /> Built for Pakistan&apos;s schools
-          </div>
-        </motion.div>
-
-        <h1 className="hero-headline" style={{ marginBottom: 20 }}>
-          <div>
-            <AnimatedWords words={TITLE_TOP} />
-          </div>
-          <div style={{ color: '#A5B4FC' }}>
-            <AnimatedWords words={TITLE_BOTTOM} delay={TITLE_TOP.length * 0.05} />
-          </div>
-        </h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          style={{
-            maxWidth: 680,
-            margin: '0 auto 32px',
-            color: 'rgba(255,255,255,0.72)',
-            fontSize: 18,
-            lineHeight: 1.6,
-          }}
-        >
-          From attendance to report cards — EduPortal gives teachers, parents, and management
-          real-time visibility into every student&apos;s journey.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.9 }}
-          style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}
-        >
-          <a className="btn btn-primary" href="#cta">
-            Start Free Trial <ArrowRight size={16} />
-          </a>
-          <a className="btn btn-ghost" href="#how">
-            See How It Works
-          </a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.1 }}
-          style={{
-            marginTop: 28,
-            display: 'flex',
-            gap: 24,
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            color: 'rgba(255,255,255,0.65)',
-            fontSize: 13,
-          }}
-        >
-          <span>✓ No credit card</span>
-          <span>✓ Setup in 10 minutes</span>
-          <span>✓ Free for 100 students</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 1.3, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{
-            marginTop: 72,
-            maxWidth: 960,
-            marginInline: 'auto',
-          }}
-        >
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="browser-frame"
-          >
-            <div className="browser-bar">
-              <div className="browser-dot" style={{ background: '#EF4444' }} />
-              <div className="browser-dot" style={{ background: '#EAB308' }} />
-              <div className="browser-dot" style={{ background: '#22C55E' }} />
-              <div
-                style={{
-                  flex: 1,
-                  textAlign: 'center',
-                  color: 'rgba(255,255,255,0.4)',
-                  fontSize: 12,
-                  fontFamily: 'monospace',
-                }}
-              >
-                app.eduportal.pk/dashboard
-              </div>
-            </div>
-            <DashboardMockup />
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function DashboardMockup() {
-  return (
-    <div
-      style={{
-        background: '#F8FAFC',
-        padding: 24,
+      <div className="container" style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: '200px 1fr',
-        gap: 16,
-        minHeight: 360,
-      }}
-    >
-      <div
-        style={{
-          background: '#0F172A',
-          borderRadius: 12,
-          padding: 16,
-          color: '#94A3B8',
-          fontSize: 12,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 8,
-        }}
-      >
-        <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>EduPortal</div>
-        {['Dashboard', 'Students', 'Staff', 'Attendance', 'Results', 'Analytics'].map((n, i) => (
-          <div
-            key={n}
+        gridTemplateColumns: '1.1fr 0.9fr',
+        gap: '40px',
+        alignItems: 'center',
+        position: 'relative',
+        zIndex: 2
+      }}>
+
+        {/* Left Side: Text Content */}
+        <div style={{ textAlign: 'left', paddingRight: '20px' }}>
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             style={{
-              padding: '6px 10px',
-              borderRadius: 6,
-              background: i === 0 ? 'rgba(29,78,216,0.2)' : 'transparent',
-              color: i === 0 ? '#fff' : undefined,
+              fontSize: '20px',
+              fontWeight: 600,
+              marginBottom: '16px',
+              letterSpacing: '0.5px',
+              color: 'rgba(255, 255, 255, 0.9)'
             }}
           >
-            {n}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-          {[
-            { t: 'Attendance', v: '94%', c: '#059669' },
-            { t: 'Students', v: '1,248', c: '#1D4ED8' },
-            { t: 'Disputes', v: '2', c: '#D97706' },
-            { t: 'Outstanding', v: 'PKR 42k', c: '#DC2626' },
-          ].map((s) => (
-            <div
-              key={s.t}
+            The Early Childhood Platform
+          </motion.p>
+
+          <h1 style={{
+            fontSize: '72px',
+            fontWeight: 800,
+            lineHeight: 1.05,
+            marginBottom: '28px',
+            letterSpacing: '-1px'
+          }}>
+            <div style={{ display: 'block' }}>
+              <AnimatedWords words={TITLE_TOP} />
+            </div>
+            <div style={{ display: 'block' }}>
+              <AnimatedWords words={TITLE_BOTTOM} delay={0.4} />
+            </div>
+          </h1>
+
+          <p style={{
+            fontSize: '22px',
+            marginBottom: '48px',
+            opacity: 0.9,
+            lineHeight: 1.5,
+            maxWidth: '540px'
+          }}>
+            Empowering educators and families to collaborate and nurture children together on a digital platform.
+          </p>
+
+          <div style={{ display: 'flex', gap: '14px' }}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               style={{
-                background: '#fff',
-                borderRadius: 10,
-                padding: 14,
-                border: '1px solid #E2E8F0',
+                padding: '12px 28px', // Padding kam kar di
+                borderRadius: '50px',
+                border: 'none',
+                background: '#0288D1',
+                color: 'white',
+                fontWeight: 600, // Weight 700 se 600 kiya taake clean lage
+                cursor: 'pointer',
+                fontSize: '15px', // Font size 18px se 15px kar diya
+                boxShadow: '0 8px 20px rgba(0,0,0,0.1)',
+                transition: 'background 0.3s ease'
               }}
             >
-              <div style={{ fontSize: 11, color: '#94A3B8', fontWeight: 600 }}>{s.t}</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: s.c, fontFamily: 'var(--font-heading)' }}>
-                {s.v}
-              </div>
-              <div style={{ height: 16, marginTop: 6 }}>
-                <svg width="100%" height="16" viewBox="0 0 100 16" preserveAspectRatio="none">
-                  <path
-                    d="M0,10 L15,6 L30,9 L45,4 L60,7 L75,3 L100,5"
-                    stroke={s.c}
-                    strokeWidth="1.5"
-                    fill="none"
-                  />
-                </svg>
-              </div>
-            </div>
-          ))}
+              Watch Tutorial
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                padding: '12px 28px',
+                borderRadius: '50px',
+                border: '2px solid white',
+                background: 'white',
+                color: '#0288D1',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontSize: '15px',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.05)'
+              }}
+            >
+              See Pricing
+            </motion.button>
+          </div>
         </div>
-        <div
-          style={{
-            background: '#fff',
-            borderRadius: 10,
-            padding: 16,
-            border: '1px solid #E2E8F0',
-            minHeight: 140,
-          }}
+
+        {/* Right Side: Image with alignment */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{ position: 'relative', justifySelf: 'end' }}
         >
-          <div
+          <div style={{
+            position: 'relative',
+            borderRadius: '40px',
+            overflow: 'hidden',
+            boxShadow: '0 30px 60px -12px rgba(0,0,0,0.3)',
+            background: '#fff',
+            border: '8px solid rgba(255,255,255,0.3)'
+          }}>
+            <img
+              src="/teacher.jpg"
+              alt="Teacher and Student"
+              style={{
+                width: '100%',
+                maxWidth: '500px',
+                height: 'auto',
+                display: 'block',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+
+          {/* Floating Badge - repositioned for better balance */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 1, type: 'spring', stiffness: 260, damping: 20 }}
             style={{
-              fontSize: 12,
-              fontWeight: 700,
-              color: '#0F172A',
-              marginBottom: 10,
-              fontFamily: 'var(--font-heading)',
+              position: 'absolute',
+              bottom: '-20px',
+              left: '-40px',
+              background: '#fff',
+              padding: '20px 30px',
+              borderRadius: '24px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              border: '1px solid #E1F5FE'
             }}
           >
-            Attendance by class
-          </div>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', height: 90 }}>
-            {[78, 92, 88, 95, 84, 90, 86, 82].map((h, i) => (
-              <div
-                key={i}
-                style={{
-                  flex: 1,
-                  height: `${h}%`,
-                  background: `linear-gradient(180deg, #1D4ED8 0%, #3B82F6 100%)`,
-                  borderRadius: 4,
-                }}
-              />
-            ))}
-          </div>
-        </div>
+            <div style={{
+              background: '#7CB342',
+              padding: '8px',
+              borderRadius: '12px',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontWeight: 800, fontSize: '14px', color: '#01579B' }}>
+                Trusted by 200+ Schools
+              </span>
+              <span style={{ fontSize: '12px', color: '#546E7A' }}>
+                10+ Cities in All over Pakistan
+              </span>
+            </div>
+          </motion.div>
+        </motion.div>
+
       </div>
-    </div>
+    </section>
   );
 }

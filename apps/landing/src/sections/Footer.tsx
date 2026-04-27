@@ -1,58 +1,102 @@
+import { Mail, MessageCircle, Phone, MapPin, Linkedin, Twitter } from 'lucide-react';
+
 export function Footer() {
   return (
     <footer
       style={{
         background: '#050812',
-        color: 'rgba(255,255,255,0.65)',
-        padding: '56px 0 32px',
+        color: 'rgba(255,255,255,0.6)',
+        padding: '80px 20px 40px',
         borderTop: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      <div className="container">
+      <div className="container" style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: 32,
-            marginBottom: 40,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 48,
+            marginBottom: 60,
           }}
         >
-          <div>
+          {/* Brand Column */}
+          <div style={{ gridColumn: 'span 1' }}>
             <div
               style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 18,
+                fontWeight: 800,
+                fontSize: 24,
                 color: '#fff',
-                marginBottom: 10,
+                marginBottom: 16,
+                letterSpacing: '-0.5px'
               }}
             >
-              EduPortal
+              Skolar<span style={{ color: '#0288D1' }}>.</span>
             </div>
-            <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-              Modern school management, built for Pakistan.
+            <p style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
+              Empowering Pakistani schools with digital-first solutions. Simple, fast, and reliable.
+            </p>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', transition: '0.3s' }}><Twitter size={20} /></a>
+              <a href="#" style={{ color: 'rgba(255,255,255,0.4)', transition: '0.3s' }}><Linkedin size={20} /></a>
             </div>
           </div>
-          <FooterCol title="Product" items={['Features', 'Pricing', 'Roadmap', 'Changelog']} />
-          <FooterCol title="Company" items={['About', 'Blog', 'Careers', 'Contact']} />
-          <FooterCol title="Support" items={['Documentation', 'Help Center', 'WhatsApp Support']} />
+
+          {/* Contact Information */}
+          <div>
+            <FooterHeading>Contact Us</FooterHeading>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 16 }}>
+              <ContactItem icon={<Mail size={16} />}>
+                alihuzaifa2112006@gmail.com
+              </ContactItem>
+              <ContactItem icon={<Mail size={16} />}>
+                hammad123@gmail.com
+              </ContactItem>
+              <ContactItem icon={<Phone size={16} />}>
+                +92 321 2944161
+              </ContactItem>
+              <ContactItem icon={<MessageCircle size={16} />}>
+                +92 317 8386880
+              </ContactItem>
+            </ul>
+          </div>
+
+          {/* Quick Links */}
+          <div style={{ display: 'flex', gap: '40px' }}>
+            <div>
+              <FooterHeading>Product</FooterHeading>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 12 }}>
+                <FooterLink>Features</FooterLink>
+                <FooterLink>Pricing</FooterLink>
+                <FooterLink>Parent Portal</FooterLink>
+              </ul>
+            </div>
+            <div>
+              <FooterHeading>Legal</FooterHeading>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 12 }}>
+                <FooterLink>Privacy</FooterLink>
+                <FooterLink>Terms</FooterLink>
+                <FooterLink>Security</FooterLink>
+              </ul>
+            </div>
+          </div>
         </div>
+
+        {/* Bottom Bar */}
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            paddingTop: 24,
+            alignItems: 'center',
+            paddingTop: 32,
             borderTop: '1px solid rgba(255,255,255,0.06)',
             fontSize: 13,
             flexWrap: 'wrap',
-            gap: 12,
+            gap: 16,
           }}
         >
-          <div>© {new Date().getFullYear()} EduPortal. Made in Pakistan.</div>
-          <div style={{ display: 'flex', gap: 16 }}>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Twitter</a>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>LinkedIn</a>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>WhatsApp</a>
+          <div>© {new Date().getFullYear()} Skolar Management System. Made in Pakistan 🇵🇰</div>
+          <div style={{ display: 'flex', gap: 24 }}>
+            <span>Built for the future of education.</span>
           </div>
         </div>
       </div>
@@ -60,29 +104,45 @@ export function Footer() {
   );
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+// Helper Components
+function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <div
-        style={{
-          color: '#fff',
-          fontFamily: 'var(--font-heading)',
-          fontWeight: 700,
-          fontSize: 13,
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          marginBottom: 14,
-        }}
-      >
-        {title}
-      </div>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10, fontSize: 14 }}>
-        {items.map((i) => (
-          <li key={i}>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>{i}</a>
-          </li>
-        ))}
-      </ul>
+    <div style={{
+      color: '#fff',
+      fontWeight: 700,
+      fontSize: 14,
+      textTransform: 'uppercase',
+      letterSpacing: '1px',
+      marginBottom: 20,
+    }}>
+      {children}
     </div>
+  );
+}
+
+function FooterLink({ children }: { children: React.ReactNode }) {
+  return (
+    <li>
+      <a href="#" style={{ 
+        color: 'inherit', 
+        textDecoration: 'none', 
+        fontSize: 14,
+        transition: '0.2s color',
+      }}
+      onMouseOver={(e) => (e.currentTarget.style.color = '#0288D1')}
+      onMouseOut={(e) => (e.currentTarget.style.color = 'inherit')}
+      >
+        {children}
+      </a>
+    </li>
+  );
+}
+
+function ContactItem({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <li style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13 }}>
+      <span style={{ color: '#0288D1' }}>{icon}</span>
+      {children}
+    </li>
   );
 }
