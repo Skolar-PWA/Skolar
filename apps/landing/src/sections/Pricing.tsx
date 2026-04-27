@@ -1,211 +1,161 @@
 import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
-type Plan = {
-  name: string;
-  monthly: number;
-  yearly: number;
-  tagline: string;
-  features: string[];
-  cta: string;
-  featured?: boolean;
-};
-
-const PLANS: Plan[] = [
+const PLANS = [
   {
     name: 'Free Trial',
-    monthly: 0,
-    yearly: 0,
-    tagline: 'Try everything, risk-free.',
-    features: ['Up to 100 students', '1 branch', '6-month trial', 'Email support'],
-    cta: 'Start Free',
+    price: 0,
+    tagline: 'Experience the power of Skolar.',
+    features: ['Up to 100 students', '1 Branch registration', '30-day full access', 'Email support'],
+    cta: 'Get Started',
+    featured: false,
   },
   {
     name: 'School',
-    monthly: 2999,
-    yearly: 2399,
-    tagline: 'Everything a single school needs.',
+    price: 9999,
+    tagline: 'Best for individual schools.',
     features: [
       'Unlimited students',
-      '1 branch',
-      'All features',
+      '1 Branch management',
       'Offline attendance',
-      'PDF report cards',
-      'Priority email support',
+      'Digital Report Cards (PDF)',
+      'Parent Mobile Portal',
+      'Priority Email support',
     ],
-    cta: 'Start Free Trial',
+    cta: 'Get Now',
     featured: true,
   },
   {
     name: 'Network',
-    monthly: 7999,
-    yearly: 6399,
-    tagline: 'For school groups with multiple branches.',
+    price: 15000,
+    tagline: 'For groups & school chains.',
     features: [
       'Unlimited students',
-      'Up to 5 branches',
-      'Centralized analytics',
+      'Up to 5 Branches',
+      'Centralized Head-Office View',
+      'Multi-branch Analytics',
+      'Onboarding Specialist',
       'Priority WhatsApp support',
-      'Onboarding specialist',
     ],
-    cta: 'Contact Sales',
+    cta: 'Get Now',
+    featured: false,
   },
 ];
 
 export function Pricing() {
-  const [yearly, setYearly] = useState(false);
-
   return (
-    <section id="pricing" className="section section-light">
-      <div className="container">
+    <section id="pricing" style={{ padding: '120px 20px', background: '#F8FAFC' }}>
+      <div className="container" style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{ textAlign: 'center', marginBottom: 36 }}
+          style={{ textAlign: 'center', marginBottom: 60 }}
         >
-          <div className="section-kicker">Pricing</div>
-          <h2 className="section-title">Simple, honest pricing.</h2>
-          <p
-            style={{
-              color: 'var(--color-text-secondary)',
-              fontSize: 17,
-              maxWidth: 520,
-              margin: '0 auto',
-            }}
-          >
-            Free to start. Pay only when you&apos;re ready.
+          <span style={{ color: '#0288D1', fontWeight: 700, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            Flexible Plans
+          </span>
+          <h2 style={{ fontSize: '42px', fontWeight: 800, color: '#01579B', marginTop: '10px' }}>
+            Simple, honest pricing.
+          </h2>
+          <p style={{ color: '#64748B', fontSize: '18px', maxWidth: '520px', margin: '15px auto 0' }}>
+            No hidden fees. Choose a plan that fits your school&apos;s size.
           </p>
         </motion.div>
 
-        <div
-          style={{
-            display: 'inline-flex',
-            margin: '0 auto 40px',
-            background: '#fff',
-            border: '1px solid var(--color-border)',
-            borderRadius: 999,
-            padding: 4,
-            position: 'relative',
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-        >
-          {(['Monthly', 'Yearly'] as const).map((t, i) => {
-            const active = yearly === (i === 1);
-            return (
-              <button
-                key={t}
-                onClick={() => setYearly(i === 1)}
-                style={{
-                  padding: '8px 20px',
-                  borderRadius: 999,
-                  border: 'none',
-                  background: active ? 'var(--color-primary)' : 'transparent',
-                  color: active ? '#fff' : 'var(--color-text-secondary)',
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                {t} {i === 1 && <span style={{ fontSize: 11, marginLeft: 4 }}>· save 20%</span>}
-              </button>
-            );
-          })}
-        </div>
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 24,
-            alignItems: 'stretch',
-          }}
-        >
-          {PLANS.map((p, i) => {
-            const price = yearly ? p.yearly : p.monthly;
-            return (
-              <motion.div
-                key={p.name}
-                className={`price-card ${p.featured ? 'featured' : ''}`}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-              >
-                {p.featured && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: -14,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      background: 'var(--color-primary)',
-                      color: '#fff',
-                      fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.06em',
-                      textTransform: 'uppercase',
-                      padding: '6px 14px',
-                      borderRadius: 999,
-                    }}
-                  >
-                    Most Popular
-                  </div>
-                )}
-                <div>
-                  <div
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontWeight: 700,
-                      color: 'var(--color-primary)',
-                      fontSize: 13,
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      marginBottom: 8,
-                    }}
-                  >
-                    {p.name}
-                  </div>
-                  <div className="price-amount">
-                    PKR {price.toLocaleString('en-PK')}
-                    <small> / month</small>
-                  </div>
-                  <div style={{ color: 'var(--color-text-muted)', fontSize: 14, marginTop: 6 }}>
-                    {p.tagline}
-                  </div>
+        {/* Pricing Cards Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '30px',
+          alignItems: 'stretch'
+        }}>
+          {PLANS.map((p, i) => (
+            <motion.div
+              key={p.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              style={{
+                background: '#fff',
+                padding: '40px',
+                borderRadius: '30px',
+                border: p.featured ? '2px solid #0288D1' : '1px solid #E2E8F0',
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: p.featured ? '0 20px 40px rgba(2, 136, 209, 0.1)' : '0 10px 20px rgba(0,0,0,0.02)',
+              }}
+            >
+              {p.featured && (
+                <div style={{
+                  position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)',
+                  background: '#0288D1', color: '#fff', padding: '6px 20px', borderRadius: '50px',
+                  fontSize: '12px', fontWeight: 700, textTransform: 'uppercase'
+                }}>
+                  Recommended
                 </div>
+              )}
 
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
-                  {p.features.map((f) => (
-                    <li
-                      key={f}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 10,
-                        fontSize: 14,
-                        color: 'var(--color-text-secondary)',
-                      }}
-                    >
-                      <Check size={16} color="var(--color-primary)" /> {f}
+              <div style={{ marginBottom: '30px' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#1E293B', marginBottom: '10px' }}>{p.name}</h3>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 600, color: '#64748B' }}>PKR</span>
+                  <span style={{ fontSize: '36px', fontWeight: 800, color: '#0F172A' }}>
+                    {p.price.toLocaleString('en-PK')}
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748B' }}>/month</span>
+                </div>
+                <p style={{ color: '#64748B', fontSize: '15px', marginTop: '10px' }}>{p.tagline}</p>
+              </div>
+
+              <div style={{ flexGrow: 1, marginBottom: '30px' }}>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {p.features.map((feat) => (
+                    <li key={feat} style={{ display: 'flex', alignItems: 'center', gap: '12px', color: '#475569', fontSize: '15px' }}>
+                      <div style={{ 
+                        width: '20px', height: '20px', borderRadius: '50%', background: '#E0F2FE', 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 
+                      }}>
+                        <Check size={12} color="#0288D1" strokeWidth={3} />
+                      </div>
+                      {feat}
                     </li>
                   ))}
                 </ul>
+              </div>
 
-                <a
-                  href="#cta"
-                  className={`btn ${p.featured ? 'btn-primary' : 'btn-light'}`}
-                  style={{ justifyContent: 'center' }}
-                >
-                  {p.cta}
-                </a>
-              </motion.div>
-            );
-          })}
+              <button style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '16px',
+                border: 'none',
+                background: p.featured ? '#0288D1' : '#F1F5F9',
+                color: p.featured ? '#fff' : '#1E293B',
+                fontSize: '16px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.3s ease'
+              }}>
+                {p.cta} <ArrowRight size={18} />
+              </button>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Bottom Note */}
+        <p style={{ textAlign: 'center', marginTop: '40px', color: '#64748B', fontSize: '14px' }}>
+          Need a custom plan for 10+ branches? <span style={{ color: '#0288D1', fontWeight: 600, cursor: 'pointer' }}>Talk to us</span>.
+        </p>
       </div>
     </section>
   );
