@@ -1,27 +1,35 @@
-import { useEffect, useState , CSSProperties} from 'react';
+import { useEffect, useState, CSSProperties } from 'react';
 
-// Moving styles outside prevents the component from re-creating 
-// the object on every render and helps avoid linter "red lines".
 const navItemBase: CSSProperties = {
   color: '#4A5568',
   textDecoration: 'none',
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
   display: 'flex',
   alignItems: 'center',
   gap: '4px',
-  position: 'relative', // TypeScript now knows this is a valid CSS position
+  position: 'relative',
   transition: 'color 0.3s ease',
 };
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const navLinks = [
+    { name: 'Home', href: '#home' },
+    { name: 'Features', href: '#features' },
+    { name: 'Security', href: '#security' },
+    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Why Skolar?', href: '#whyskolar' },
+    { name: 'Pricing & Plans', href: '#pricing' },
+  ];
 
   return (
     <nav
@@ -31,7 +39,7 @@ export function Navbar() {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: scrolled ? 'rgba(255, 255, 255, 0.8)' : '#ffffff',
+        background: scrolled || isMenuOpen ? '#ffffff' : 'rgba(255, 255, 255, 0.9)',
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         boxShadow: scrolled ? '0 10px 30px -10px rgba(0,0,0,0.1)' : 'none',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -45,47 +53,38 @@ export function Navbar() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: scrolled ? '10px 24px' : '18px 24px',
+          padding: scrolled ? '12px 24px' : '20px 24px',
           transition: 'padding 0.4s ease'
         }}
       >
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', zIndex: 1100 }}>
           <img
             src="/logo.png"
             alt="Skolar Logo"
-            style={{ width: '36px', height: '36px', objectFit: 'contain' }}
+            style={{ width: '32px', height: '32px', objectFit: 'contain' }}
           />
-          <span style={{ fontSize: '24px', fontWeight: '800', color: '#1A202C' }}>
+          <span style={{ fontSize: '22px', fontWeight: '800', color: '#1A202C', letterSpacing: '-0.5px' }}>
             Skolar
           </span>
         </div>
 
-        {/* Links */}
-        <div style={{ display: 'flex', gap: '28px', alignItems: 'center' }} className="nav-links">
-          {['Home', 'Features', 'Security', 'Testimonials', 'Why Skolar?'].map((item) => (
-            <a 
-              key={item} 
-              href={`#${item.toLowerCase().replace(' ', '')}`} 
+        {/* Desktop Links */}
+        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }} className="desktop-menu">
+          {navLinks.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
               className="nav-item-hover"
               style={navItemBase}
             >
-              {item}
+              {item.name}
             </a>
           ))}
-          
-          {/* FIXED PRICING LINK */}
-          <a 
-            href="#pricing" 
-            className="nav-item-hover" 
-            style={{ ...navItemBase, color: '#2D3748' }}
-          >
-            Pricing & Plans
-          </a>
         </div>
 
-        {/* Buttons */}
-        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        {/* Desktop Buttons */}
+        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }} className="desktop-menu">
           <a href="#login" style={{ ...navItemBase, color: '#00adef' }}>
             Login
           </a>
@@ -95,8 +94,8 @@ export function Navbar() {
             style={{
               background: 'linear-gradient(135deg, #00adef 0%, #0081b3 100%)',
               color: '#fff',
-              padding: '12px 28px',
-              borderRadius: '12px',
+              padding: '10px 22px',
+              borderRadius: '10px',
               textDecoration: 'none',
               fontWeight: '700',
               fontSize: '14px',
@@ -107,9 +106,92 @@ export function Navbar() {
             Start Free Trial
           </a>
         </div>
+
+        {/* Mobile Toggle Button */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '5px',
+            zIndex: 1100
+          }}
+          className="mobile-toggle"
+        >
+          <div style={{
+            width: '25px',
+            height: '2px',
+            backgroundColor: '#1A202C',
+            margin: '6px 0',
+            transition: '0.4s',
+            transform: isMenuOpen ? 'rotate(-45deg) translate(-5px, 6px)' : 'none'
+          }} />
+          <div style={{
+            width: '25px',
+            height: '2px',
+            backgroundColor: '#1A202C',
+            margin: '6px 0',
+            opacity: isMenuOpen ? 0 : 1,
+            transition: '0.4s'
+          }} />
+          <div style={{
+            width: '25px',
+            height: '2px',
+            backgroundColor: '#1A202C',
+            margin: '6px 0',
+            transition: '0.4s',
+            transform: isMenuOpen ? 'rotate(45deg) translate(-5px, -7px)' : 'none'
+          }} />
+        </button>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      {/* Mobile Menu Overlay */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        right: isMenuOpen ? 0 : '-100%',
+        width: '100%',
+        height: '100vh',
+        background: '#ffffff',
+        zIndex: 1050,
+        transition: 'right 0.3s ease-in-out',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '100px 40px',
+        gap: '25px'
+      }}>
+        {navLinks.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            onClick={() => setIsMenuOpen(false)}
+            style={{ ...navItemBase, fontSize: '20px' }}
+          >
+            {item.name}
+          </a>
+        ))}
+        <hr style={{ border: 'none', borderTop: '1px solid #eee', margin: '10px 0' }} />
+        <a href="#login" style={{ ...navItemBase, fontSize: '20px', color: '#00adef' }}>Login</a>
+        <a
+          href="#demo"
+          style={{
+            background: '#00adef',
+            color: '#fff',
+            padding: '16px',
+            borderRadius: '12px',
+            textAlign: 'center',
+            textDecoration: 'none',
+            fontWeight: '700'
+          }}
+        >
+          Start Free Trial
+        </a>
+      </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .nav-item-hover::after {
           content: '';
           position: absolute;
@@ -123,7 +205,11 @@ export function Navbar() {
         .nav-item-hover:hover::after { width: 100%; }
         .nav-item-hover:hover { color: #00adef !important; }
         .cta-button:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        @media (max-width: 1024px) { .nav-links { display: none; } }
+        
+        @media (max-width: 1024px) {
+          .desktop-menu { display: none !important; }
+          .mobile-toggle { display: block !important; }
+        }
       `}} />
     </nav>
   );
