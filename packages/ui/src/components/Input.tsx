@@ -1,4 +1,5 @@
 import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { cn } from '../utils/cn';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -6,10 +7,12 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hint?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  wrapperClassName?: string;
+  inputClassName?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, error, hint, leftIcon, rightIcon, style, id, ...rest },
+  { label, error, hint, leftIcon, rightIcon, style, id, wrapperClassName, inputClassName, ...rest },
   ref,
 ) {
   const inputId = id ?? `in-${Math.random().toString(36).slice(2, 9)}`;
@@ -24,6 +27,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         </label>
       )}
       <div
+        className={cn('ep-input-shell', wrapperClassName)}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -33,7 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           border: `1px solid ${error ? 'var(--color-danger)' : 'var(--color-border)'}`,
           borderRadius: 10,
           background: 'var(--color-surface)',
-          transition: 'border-color 120ms ease, box-shadow 120ms ease',
+          transition: 'border-color 120ms ease',
         }}
       >
         {leftIcon && (
@@ -42,6 +46,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         <input
           ref={ref}
           id={inputId}
+          className={cn('ep-input-el', inputClassName)}
           {...rest}
           style={{
             border: 'none',

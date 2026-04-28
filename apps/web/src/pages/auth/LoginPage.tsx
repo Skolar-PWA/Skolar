@@ -47,28 +47,13 @@ export default function LoginPage() {
   if (user) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        background: 'var(--color-bg)',
-      }}
-      className="login-grid"
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 32,
-        }}
-      >
+    <div className="login-layout">
+      <div className="login-left">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ width: '100%', maxWidth: 420 }}
+          className="login-form-box"
         >
           <div
             style={{
@@ -81,35 +66,27 @@ export default function LoginPage() {
               fontSize: 20,
             }}
           >
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 8,
-                background: 'var(--color-primary)',
-                color: '#fff',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
+            <div className="sidebar-logo-mark" style={{ width: 36, height: 36, fontSize: 14 }}>
               EP
             </div>
             EduPortal
           </div>
 
-          <h1 style={{ fontSize: 32, marginBottom: 8 }}>Welcome back</h1>
-          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 28 }}>
+          <h1 className="page-title" style={{ fontSize: 28, marginBottom: 8 }}>
+            Welcome back
+          </h1>
+          <p style={{ color: 'var(--text-700)', marginBottom: 28, fontFamily: 'var(--font-body)' }}>
             Sign in to manage your school, mark attendance, and review results.
           </p>
 
-          <Card padding="lg">
+          <Card padding="lg" style={{ boxShadow: 'var(--shadow-card)' }}>
             <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <Input
                 label="Email or phone"
                 placeholder="admin@demo.pk"
                 leftIcon={<Mail size={16} />}
                 error={errors.identifier?.message}
+                wrapperClassName="ep-login-input-shell"
                 {...register('identifier')}
               />
               <Input
@@ -118,16 +95,18 @@ export default function LoginPage() {
                 placeholder="Your password"
                 leftIcon={<Lock size={16} />}
                 error={errors.password?.message}
+                wrapperClassName="ep-login-input-shell"
                 {...register('password')}
               />
-              <Button type="submit" size="lg" fullWidth loading={isSubmitting}>
+              <Button type="submit" size="lg" fullWidth loading={isSubmitting} data-ep-login-submit>
                 Sign in
               </Button>
               <div
                 style={{
                   fontSize: 12,
-                  color: 'var(--color-text-muted)',
+                  color: 'var(--text-500)',
                   textAlign: 'center',
+                  fontFamily: 'var(--font-body)',
                 }}
               >
                 Demo: admin@demo.pk / password123
@@ -141,6 +120,7 @@ export default function LoginPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
+        className="login-right"
         style={{
           background: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 70%, #1D4ED8 100%)',
           color: '#fff',
@@ -151,7 +131,6 @@ export default function LoginPage() {
           position: 'relative',
           overflow: 'hidden',
         }}
-        className="login-hero"
       >
         <div
           style={{
@@ -185,13 +164,14 @@ export default function LoginPage() {
               lineHeight: 1.15,
               color: '#fff',
               marginBottom: 16,
+              fontFamily: 'var(--font-heading)',
             }}
           >
             Your school, running smarter.
           </h2>
           <p style={{ fontSize: 16, lineHeight: 1.6, color: 'rgba(255,255,255,0.75)' }}>
-            Attendance, results, fees and parent communication — one app, works offline,
-            installs on any phone. From teachers to parents, everyone stays in sync.
+            Attendance, results, fees and parent communication — one app, works offline, installs on any
+            phone. From teachers to parents, everyone stays in sync.
           </p>
           <div
             style={{
@@ -216,17 +196,6 @@ export default function LoginPage() {
           </div>
         </div>
       </motion.div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          .login-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .login-hero {
-            display: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

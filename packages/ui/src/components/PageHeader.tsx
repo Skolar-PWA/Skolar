@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 
 export interface Breadcrumb {
@@ -14,54 +15,30 @@ export interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, breadcrumbs, action }: PageHeaderProps) {
   return (
-    <div
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 20,
-        background: 'var(--color-bg)',
-        paddingBlock: '20px 16px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        gap: 16,
-        flexWrap: 'wrap',
-        borderBottom: '1px solid var(--color-border)',
-        marginBottom: 20,
-      }}
-    >
+    <div className="page-top">
       <div>
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <div
-            style={{
-              fontSize: 12,
-              color: 'var(--color-text-muted)',
-              marginBottom: 6,
-              display: 'flex',
-              gap: 4,
-              flexWrap: 'wrap',
-            }}
-          >
+          <div className="page-breadcrumb">
             {breadcrumbs.map((b, i) => (
               <span key={i}>
                 {b.href ? (
-                  <a href={b.href} style={{ color: 'inherit' }}>
-                    {b.label}
-                  </a>
+                  <Link to={b.href}>{b.label}</Link>
                 ) : (
                   b.label
                 )}
-                {i < breadcrumbs.length - 1 && <span style={{ margin: '0 4px' }}>/</span>}
+                {i < breadcrumbs.length - 1 && <span>/</span>}
               </span>
             ))}
           </div>
         )}
-        <h1 style={{ fontSize: 24, marginBottom: 4 }}>{title}</h1>
+        <h1 className="page-title">{title}</h1>
         {subtitle && (
-          <div style={{ fontSize: 14, color: 'var(--color-text-secondary)' }}>{subtitle}</div>
+          <div style={{ fontSize: 14, color: 'var(--text-500)', marginTop: 4, fontFamily: 'var(--font-body)' }}>
+            {subtitle}
+          </div>
         )}
       </div>
-      {action && <div>{action}</div>}
+      {action && <div className="page-actions">{action}</div>}
     </div>
   );
 }

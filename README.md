@@ -70,7 +70,15 @@ pnpm dev
 
 That's it. You don't need to run install / migrate / seed every day.
 
+### If you see “Authentication failed” (Prisma P1000) for `eduportal`
+
+1. **Port 5432 is often used by a local PostgreSQL install** (e.g. “PostgreSQL 18” on Windows) *and* by Docker. This project maps the Docker database to **`localhost:5433`** so the app talks to the right server. Your `DATABASE_URL` in `apps/api/.env` should use port **5433** (see `.env.example`).
+
+2. **A `DATABASE_URL` set in Windows or your shell overrides `apps/api/.env`.**  
+   Check: **Settings → System → About → Advanced system settings → Environment Variables**, or run `echo $env:DATABASE_URL` in PowerShell. If you see an old URL (for example port **5432**), remove it or set it to match `.env`, then **open a new terminal** and run `pnpm dev` again.
+
 ---
+
 
 ## 📁 What the folders mean
 

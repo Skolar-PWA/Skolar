@@ -43,14 +43,7 @@ export function DataTable<T>({
 
   return (
     <div style={{ width: '100%', overflowX: 'auto' }}>
-      <table
-        style={{
-          width: '100%',
-          borderCollapse: 'separate',
-          borderSpacing: 0,
-          fontSize: 14,
-        }}
-      >
+      <table className="data-table">
         <thead>
           <tr>
             {columns.map((c) => (
@@ -58,16 +51,7 @@ export function DataTable<T>({
                 key={c.key}
                 style={{
                   textAlign: c.align ?? 'left',
-                  padding: '12px 16px',
-                  background: 'var(--color-surface-2)',
-                  color: 'var(--color-text-secondary)',
-                  fontWeight: 600,
-                  fontSize: 12,
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.4,
-                  borderBottom: '1px solid var(--color-border)',
                   width: c.width,
-                  whiteSpace: 'nowrap',
                 }}
               >
                 {c.header}
@@ -79,24 +63,19 @@ export function DataTable<T>({
           {rows.map((row, idx) => (
             <motion.tr
               key={rowKey(row)}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(idx * 0.03, 0.3), duration: 0.25 }}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: Math.min(idx * 0.04, 0.4), duration: 0.2 }}
               onClick={onRowClick ? () => onRowClick(row) : undefined}
               style={{
                 cursor: onRowClick ? 'pointer' : 'default',
-                transition: 'background 120ms ease',
               }}
-              whileHover={onRowClick ? { backgroundColor: 'var(--color-surface-2)' } : undefined}
             >
               {columns.map((c) => (
                 <td
                   key={c.key}
                   style={{
-                    padding: '14px 16px',
-                    borderBottom: '1px solid var(--color-border)',
                     textAlign: c.align ?? 'left',
-                    color: 'var(--color-text-primary)',
                   }}
                 >
                   {c.render ? c.render(row) : (row as Record<string, unknown>)[c.key] as ReactNode}

@@ -1,30 +1,19 @@
 import type { ReactNode } from 'react';
-import { Sidebar } from './Sidebar';
+import { AccountDrawer } from './AccountDrawer';
+import { CommandPalette } from './CommandPalette';
+import Sidebar from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { Topbar } from './Topbar';
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        minHeight: '100vh',
-        background: 'var(--color-bg)',
-      }}
-    >
+    <div className="app-layout">
       <Sidebar />
-      <div
-        style={{
-          flex: 1,
-          minWidth: 0,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <div className="main-area">
+        <AccountDrawer />
+        <CommandPalette />
         <Topbar />
-        <main className="page-container" style={{ flex: 1 }}>
-          {children}
-        </main>
+        <main className="page-content">{children}</main>
         <MobileNav />
       </div>
     </div>

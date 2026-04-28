@@ -13,8 +13,8 @@ const StudentsPage = lazy(() => import('./pages/StudentsPage'));
 const StudentDetailPage = lazy(() => import('./pages/StudentDetailPage'));
 const StaffPage = lazy(() => import('./pages/StaffPage'));
 const ClassesPage = lazy(() => import('./pages/ClassesPage'));
-const AttendancePage = lazy(() => import('./pages/AttendancePage'));
-const AttendanceMarkPage = lazy(() => import('./pages/AttendanceMarkPage'));
+const AttendancePage = lazy(() => import('./pages/attendance/AttendancePage'));
+const AttendanceMarkPage = lazy(() => import('./pages/attendance/MarkAttendancePage'));
 const AttendanceScanPage = lazy(() => import('./pages/AttendanceScanPage'));
 const ResultsPage = lazy(() => import('./pages/ResultsPage'));
 const AnnouncementsPage = lazy(() => import('./pages/AnnouncementsPage'));
@@ -62,10 +62,10 @@ function AnimatedRoutes({ children }: { children: React.ReactNode }) {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         {children}
       </motion.div>
@@ -104,11 +104,13 @@ export function App() {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#0F172A',
-            color: '#fff',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-900)',
             fontFamily: 'var(--font-body)',
             fontSize: 14,
             borderRadius: 12,
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-dropdown)',
           },
         }}
       />

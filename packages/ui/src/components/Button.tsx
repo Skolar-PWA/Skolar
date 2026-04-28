@@ -15,33 +15,54 @@ export interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'>
   children?: ReactNode;
 }
 
+/** Matches apps/landing Navbar "Start Free Trial" CTA */
 const variantStyles: Record<ButtonVariant, CSSProperties> = {
   primary: {
-    background: 'var(--color-primary)',
+    background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%)',
     color: '#fff',
-    border: '1px solid var(--color-primary)',
+    border: 'none',
+    boxShadow: '0 4px 15px rgba(0, 173, 239, 0.3)',
   },
   secondary: {
     background: 'var(--color-surface)',
     color: 'var(--color-text-primary)',
     border: '1px solid var(--color-border)',
+    boxShadow: 'var(--shadow-xs)',
   },
   ghost: {
     background: 'transparent',
-    color: 'var(--color-text-primary)',
+    color: 'var(--color-primary)',
     border: '1px solid transparent',
   },
   danger: {
-    background: 'var(--color-danger)',
-    color: '#fff',
-    border: '1px solid var(--color-danger)',
+    background: 'var(--color-danger-light)',
+    color: 'var(--color-danger)',
+    border: '1px solid var(--red-border)',
   },
 };
 
 const sizeStyles: Record<ButtonSize, CSSProperties> = {
-  sm: { height: 32, padding: '0 12px', fontSize: 13, borderRadius: 8 },
-  md: { height: 40, padding: '0 16px', fontSize: 14, borderRadius: 10 },
-  lg: { height: 48, padding: '0 20px', fontSize: 15, borderRadius: 12 },
+  sm: {
+    minHeight: 36,
+    padding: '8px 16px',
+    fontSize: 14,
+    borderRadius: 10,
+    fontWeight: 600,
+  },
+  md: {
+    minHeight: 44,
+    padding: '12px 28px',
+    fontSize: 15,
+    borderRadius: 12,
+    fontWeight: 700,
+  },
+  lg: {
+    minHeight: 48,
+    padding: '14px 32px',
+    fontSize: 16,
+    borderRadius: 12,
+    fontWeight: 700,
+  },
 };
 
 export function Button({
@@ -57,30 +78,33 @@ export function Button({
   style,
   ...rest
 }: ButtonProps) {
+  const primaryHover =
+    variant === 'primary' && !disabled && !loading;
+
   return (
     <motion.button
       whileTap={disabled || loading ? undefined : { scale: 0.97 }}
       whileHover={
         disabled || loading
           ? undefined
-          : {
-              filter: 'brightness(1.05)',
-            }
+          : primaryHover
+            ? { y: -2, filter: 'brightness(1.1)' }
+            : variant === 'ghost'
+              ? { background: 'var(--color-primary-light)' }
+              : { filter: 'brightness(1.02)' }
       }
-      transition={{ duration: 0.12 }}
+      transition={{ duration: 0.2 }}
       disabled={disabled || loading}
-      className={cn('ep-button', className)}
+      className={cn('ep-button', variant === 'primary' && 'ep-button--primary', className)}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
-        fontWeight: 600,
         fontFamily: 'var(--font-heading)',
         cursor: disabled || loading ? 'not-allowed' : 'pointer',
         opacity: disabled || loading ? 0.6 : 1,
         width: fullWidth ? '100%' : 'auto',
-        transition: 'filter 120ms ease',
         ...variantStyles[variant],
         ...sizeStyles[size],
         ...style,

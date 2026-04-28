@@ -24,8 +24,20 @@ export class BranchesService {
     address?: string;
     city?: string;
     contact?: string;
+    /** Default daily attendance cutoff (HH:mm). */
+    attendanceDeadlineTime?: string;
   }) {
-    return this.prisma.branch.create({ data });
+    const { attendanceDeadlineTime, ...branchData } = data;
+    return this.prisma.$transaction(async (tx) => {
+      const branch = await tx.branch.create({ data: branchData });
+      await tx.branchSettings.create({
+        data: {
+          branchId: branch.id,
+          attendanceDeadlineTime: attendanceDeadlineTime ?? '09:30',
+        },
+      });
+      return branch;
+    });
   }
 
   update(

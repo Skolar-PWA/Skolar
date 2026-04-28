@@ -1,13 +1,27 @@
-import { Avatar, Button } from '@eduportal/ui';
-import { LogOut, Menu, Wifi, WifiOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Menu, Search, Wifi, WifiOff } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuthStore } from '../store/auth';
 import { useUIStore } from '../store/ui';
+import { useMatchMedia } from '../hooks/useMatchMedia';
+
+function initials(name: string) {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export function Topbar() {
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
-  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
+  const setCommandMenuOpen = useUIStore((s) => s.setCommandMenuOpen);
+  const accountDrawerOpen = useUIStore((s) => s.accountDrawerOpen);
+  const setAccountDrawerOpen = useUIStore((s) => s.setAccountDrawerOpen);
+  const isMobile = useMatchMedia('(max-width: 768px)');
+
   const [online, setOnline] = useState(
     typeof navigator !== 'undefined' ? navigator.onLine : true,
   );
@@ -23,91 +37,70 @@ export function Topbar() {
     };
   }, []);
 
+  const label = useMemo(
+    () => (user?.branchId ? 'Main Campus' : 'EduPortal'),
+    [user?.branchId],
+  );
+
+  const openMenu = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <header
-      style={{
-        height: 60,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 24px',
-        background: 'var(--color-surface)',
-        borderBottom: '1px solid var(--color-border)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 30,
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button
-          onClick={toggleSidebar}
-          style={{
-            background: 'transparent',
-            border: '1px solid var(--color-border)',
-            borderRadius: 10,
-            width: 36,
-            height: 36,
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          aria-label="Toggle sidebar"
-        >
-          <Menu size={18} />
-        </button>
-        <div
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: 15,
-          }}
-        >
-          {user?.branchId ? 'Main Campus' : 'EduPortal'}
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          title={online ? 'Online' : 'Offline — changes will sync when back'}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            padding: '4px 10px',
-            borderRadius: 999,
-            background: online ? 'var(--color-success-light)' : 'var(--color-warning-light)',
-            color: online ? 'var(--color-success)' : 'var(--color-warning)',
-            fontSize: 12,
-            fontWeight: 600,
-          }}
-        >
-          {online ? <Wifi size={14} /> : <WifiOff size={14} />}
-          {online ? 'Online' : 'Offline'}
-        </div>
-
-        {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Avatar name={user.displayName} src={user.photoUrl} size={34} />
-            <div style={{ display: 'none' }} className="topbar-user-meta">
-              <div style={{ fontWeight: 600, fontSize: 13 }}>{user.displayName}</div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: 'var(--color-text-muted)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.4,
-                }}
-              >
-                {user.role.replace('_', ' ')}
-              </div>
-            </div>
-            <Button variant="ghost" size="sm" onClick={logout} leftIcon={<LogOut size={14} />}>
-              Logout
-            </Button>
-          </div>
+    <header className="topbar">
+      <div className="topbar-left">
+        {isMobile && (
+          <button
+            type="button"
+            className="topbar-menu-btn"
+            onClick={openMenu}
+            aria-label="Open menu"
+            aria-expanded={sidebarOpen}
+          >
+            <Menu size={18} strokeWidth={2} />
+          </button>
         )}
+        <button
+          type="button"
+          className="topbar-menu-btn"
+          onClick={() => setCommandMenuOpen(true)}
+          aria-label="Search pages (Ctrl+K)"
+        >
+          <Search size={18} strokeWidth={2} />
+        </button>
+        <div className="topbar-branch" title={label}>
+          {label}
+        </div>
       </div>
+
+      {user && (
+        <div className="topbar-right">
+          {!isMobile && (
+            <div
+              className="online-pill"
+              data-offline={!online}
+              title={online ? 'Online' : 'Offline — changes will sync when back'}
+            >
+              <span className="online-dot" />
+              {online ? <Wifi size={14} /> : <WifiOff size={14} />}
+              {online ? 'Online' : 'Offline'}
+            </div>
+          )}
+
+          <div className="topbar-account">
+            <button
+              type="button"
+              className="topbar-account-trigger"
+              onClick={() => setAccountDrawerOpen(!accountDrawerOpen)}
+              aria-expanded={accountDrawerOpen}
+              aria-haspopup="dialog"
+              aria-label="Account menu"
+            >
+              <span className="avatar">{initials(user.displayName)}</span>
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

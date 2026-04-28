@@ -9,47 +9,14 @@ export interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '48px 24px',
-        textAlign: 'center',
-        gap: 12,
-      }}
-    >
-      {icon && (
-        <div
-          style={{
-            width: 72,
-            height: 72,
-            borderRadius: 999,
-            background: 'var(--color-primary-light)',
-            color: 'var(--color-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 8,
-          }}
-        >
-          {icon}
-        </div>
+    <div className="ep-empty-state">
+      {icon != null && (
+        <div className="ep-empty-state__icon">{typeof icon === 'string' ? <span>{icon}</span> : icon}</div>
       )}
-      <h3 style={{ fontSize: 18, fontWeight: 700 }}>{title}</h3>
-      {description && (
-        <div
-          style={{
-            color: 'var(--color-text-secondary)',
-            maxWidth: 420,
-            fontSize: 14,
-            lineHeight: 1.5,
-          }}
-        >
-          {description}
-        </div>
-      )}
+      <div>
+        <div className="ep-empty-state__title">{title}</div>
+        {description && <div className="ep-empty-state__desc">{description}</div>}
+      </div>
       {action && <div style={{ marginTop: 8 }}>{action}</div>}
     </div>
   );
