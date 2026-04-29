@@ -7,13 +7,13 @@ import {
   IsIn,
   IsOptional,
   IsString,
-  IsUUID,
   ValidateNested,
 } from 'class-validator';
+import { IsDbUuid } from '../../common/decorators/is-db-uuid.decorator';
 import { AttendanceStatus } from '@eduportal/shared';
 
 class AttendanceRecordInput {
-  @ApiProperty() @IsUUID() studentId!: string;
+  @ApiProperty() @IsDbUuid() studentId!: string;
   @ApiProperty({ enum: AttendanceStatus }) @IsEnum(AttendanceStatus) status!: AttendanceStatus;
   @ApiPropertyOptional() @IsOptional() @IsString() note?: string;
   @ApiPropertyOptional() @IsOptional() @IsIn(['manual', 'qr_camera', 'qr_fixed_device']) markedMethod?: string;
@@ -22,15 +22,15 @@ class AttendanceRecordInput {
 
 /** @deprecated use submit session — kept for offline queue */
 class LegacyAttendanceRecord {
-  @ApiProperty() @IsUUID() studentId!: string;
+  @ApiProperty() @IsDbUuid() studentId!: string;
   @ApiProperty({ enum: AttendanceStatus }) @IsEnum(AttendanceStatus) status!: AttendanceStatus;
   @ApiPropertyOptional() @IsOptional() @IsString() note?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() scannedVia?: string;
 }
 
 export class MarkAttendanceDto {
-  @ApiProperty() @IsUUID() sectionId!: string;
-  @ApiPropertyOptional() @IsOptional() @IsUUID() classSubjectId?: string;
+  @ApiProperty() @IsDbUuid() sectionId!: string;
+  @ApiPropertyOptional() @IsOptional() @IsDbUuid() classSubjectId?: string;
   @ApiProperty() @IsDateString() date!: string;
   @ApiProperty({ type: [LegacyAttendanceRecord] })
   @IsArray()
@@ -41,12 +41,12 @@ export class MarkAttendanceDto {
 
 export class QrScanDto {
   @ApiProperty() @IsString() qrToken!: string;
-  @ApiPropertyOptional() @IsOptional() @IsUUID() sessionId?: string;
+  @ApiPropertyOptional() @IsOptional() @IsDbUuid() sessionId?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() deviceName?: string;
 }
 
 export class CreateSessionDto {
-  @ApiProperty() @IsUUID() sectionId!: string;
+  @ApiProperty() @IsDbUuid() sectionId!: string;
   @ApiProperty() @IsDateString() date!: string;
 }
 
