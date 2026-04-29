@@ -4,11 +4,12 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { ArrowLeft, WifiOff } from 'lucide-react';
-import { Button, Card, LoadingSkeleton, PageHeader } from '@eduportal/ui';
+import { Button, Card, LoadingSkeleton, Modal, PageHeader } from '@eduportal/ui';
 import type { AttendanceStatus } from '@eduportal/shared';
 import toast from 'react-hot-toast';
 import { attendanceService } from '../../services/api/attendance.service';
 import { queueAttendance } from '../../services/offline/attendanceQueue';
+import { useMatchMedia } from '../../hooks/useMatchMedia';
 
 type StatusMap = Record<string, AttendanceStatus>;
 
@@ -29,6 +30,8 @@ export default function MarkAttendancePage() {
   const qc = useQueryClient();
   const [statuses, setStatuses] = useState<StatusMap>({});
   const [online, setOnline] = useState(() => (typeof navigator !== 'undefined' ? navigator.onLine : true));
+  const [absentConfirmOpen, setAbsentConfirmOpen] = useState(false);
+  const isNarrowSubmitBar = useMatchMedia('(max-width: 640px)');
 
   useEffect(() => {
     const on = () => setOnline(true);
@@ -101,12 +104,6 @@ export default function MarkAttendancePage() {
         status,
         markedMethod: 'manual' as const,
       }));
-      if (counts.absent > 0) {
-        const ok = window.confirm(
-          `${counts.absent} student(s) will be marked absent. Parents may be notified. Proceed?`,
-        );
-        if (!ok) throw new Error('cancel');
-      }
       if (!online) {
         await queueAttendance({
           sectionId,
@@ -216,7 +213,7 @@ export default function MarkAttendancePage() {
       </div>
 
       <div className="ep-attendance-card-wrap">
-        <Card padding="none">
+        <Card padding="none" className="ep-attendance-student-card">
           <div className="ep-attendance-list">
             <AnimatePresence>
               {section.enrollments.map((e, index) => {
@@ -293,11 +290,56 @@ export default function MarkAttendancePage() {
           type="button"
           loading={submitM.isPending}
           disabled={locked || submitted || !sessionId}
-          onClick={() => submitM.mutate()}
+          fullWidth={isNarrowSubmitBar}
+          onClick={() => {
+            if (locked || submitted || !sessionId) return;
+            if (counts.absent > 0) {
+              setAbsentConfirmOpen(true);
+              return;
+            }
+            void submitM.mutate();
+          }}
         >
           Submit attendance
         </Button>
       </div>
+
+      <Modal
+        variant="card"
+        size="sm"
+        open={absentConfirmOpen}
+        onClose={() => {
+          if (!submitM.isPending) setAbsentConfirmOpen(false);
+        }}
+        title="Confirm submission"
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={submitM.isPending}
+              onClick={() => setAbsentConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              loading={submitM.isPending}
+              onClick={() => {
+                setAbsentConfirmOpen(false);
+                void submitM.mutate();
+              }}
+            >
+              Proceed
+            </Button>
+          </>
+        }
+      >
+        <p className="ep-confirm-dialog-body">
+          <strong>{counts.absent}</strong> student{counts.absent === 1 ? '' : 's'} will be marked absent. Parents
+          may be notified.
+        </p>
+      </Modal>
     </div>
   );
 }

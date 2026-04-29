@@ -17,16 +17,13 @@ export function Sidebar() {
   const sidebarOpen = useUIStore((s) => s.sidebarOpen);
   const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
-  const navLabelsVisible = useUIStore((s) => s.navLabelsVisible);
   const toggleNavCollapse = useUIStore((s) => s.toggleNavCollapse);
 
   const user = useAuthStore((s) => s.user);
-  const labelsOff = !navLabelsVisible;
   const desktopAsideClass = [
     'sidebar',
     'sidebar--desktop',
     sidebarCollapsed && 'sidebar--collapsed',
-    labelsOff && 'sidebar--labels-hidden',
   ]
     .filter(Boolean)
     .join(' ');
@@ -139,7 +136,7 @@ export function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.38, ease: easeSmooth }}
+              transition={{ duration: 0.22, ease: easeSmooth }}
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
@@ -148,7 +145,7 @@ export function Sidebar() {
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
               style={{ willChange: 'transform' }}
             >
               {inner}

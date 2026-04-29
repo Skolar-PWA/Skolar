@@ -27,9 +27,9 @@
   box-shadow: 4px 0 40px rgba(15, 23, 42, 0.05);
   overflow: visible;
   transition:
-    width 0.48s cubic-bezier(0.4, 0, 0.2, 1),
-    min-width 0.48s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.35s ease;
+    width 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+    min-width 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.2s ease;
 }
 
 .sidebar--desktop.sidebar--collapsed {
@@ -182,7 +182,9 @@
   color: var(--text-900);
   letter-spacing: -0.2px;
   min-width: 0;
-  transition: opacity 0.2s ease, max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+  max-width: 200px;
+  transition: opacity 0.16s ease, max-width 0.2s cubic-bezier(0.32, 0.72, 0, 1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -259,45 +261,30 @@
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.12s ease, color 0.12s ease, padding 0.2s ease;
+  transition: background 0.12s ease, color 0.12s ease, padding 0.18s cubic-bezier(0.32, 0.72, 0, 1);
   position: relative;
   min-height: 40px;
   box-sizing: border-box;
 }
 
-/* Text hidden first: center icons in full track, then width shrinks (no icon “dance”) */
-.sidebar--labels-hidden .nav-item {
+/* Nav labels: animated width/opacity in sync with sidebar (see .nav-item-label below) */
+.sidebar--collapsed .nav-item {
   justify-content: center;
   padding: 10px 8px;
   gap: 0;
 }
 
-.sidebar--labels-hidden .nav-item-label {
-  position: absolute;
-  width: 0;
-  height: 0;
-  padding: 0;
-  margin: 0;
+.sidebar--collapsed .sidebar-logo-text {
+  max-width: 0;
+  opacity: 0;
   overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-  white-space: nowrap;
 }
-
-.sidebar--labels-hidden .sidebar-logo-text {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-}
-
-.sidebar--labels-hidden .sidebar-logo {
+.sidebar--collapsed .sidebar-logo {
   flex: 0 1 auto;
   justify-content: flex-start;
+  min-width: 0;
 }
-
-.sidebar--labels-hidden .sidebar-header-row {
+.sidebar--collapsed .sidebar-header-row {
   justify-content: space-between;
   padding-left: 14px;
   padding-right: 8px;
@@ -346,10 +333,17 @@
   text-align: left;
 }
 
-.sidebar--collapsed .nav-item {
-  justify-content: center;
-  padding: 10px 8px;
-  gap: 0;
+.sidebar--desktop .nav-item-label {
+  transition: max-width 0.2s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.16s ease;
+  max-width: 14rem;
+  opacity: 1;
+}
+.sidebar--desktop.sidebar--collapsed .nav-item .nav-item-label {
+  max-width: 0;
+  opacity: 0;
+  flex: 0 0 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .sidebar--collapsed .sidebar-rail--edge {
@@ -423,7 +417,7 @@
   right: -6px;
   left: auto;
   margin: 0;
-  padding: 2px 8px;
+  padding: 3px 6px;
   min-height: 0;
   font-size: 10px;
   font-weight: 800;
@@ -500,46 +494,6 @@
   text-align: center;
 }
 
-.sidebar--labels-hidden .sidebar-upgrade-name,
-.sidebar--labels-hidden .sidebar-upgrade-email {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-}
-
-.sidebar--labels-hidden .sidebar-upgrade-avatar-wrap {
-  margin: 0 auto 4px;
-  width: 36px;
-  height: 36px;
-  padding-bottom: 0;
-}
-
-.sidebar--labels-hidden .sidebar-upgrade-avatar {
-  width: 36px;
-  height: 36px;
-}
-
-.sidebar--labels-hidden .sidebar-upgrade-badge {
-  top: -1px;
-  right: -3px;
-  padding: 1px 4px;
-  font-size: 7px;
-  line-height: 1.25;
-  border-radius: 3px;
-  transform: translate(22%, -12%);
-  transform-origin: right top;
-}
-
-.sidebar--labels-hidden .sidebar-upgrade-cta {
-  margin-top: 0;
-  font-size: 11px;
-  padding: 5px 10px;
-}
-
-
-.sidebar-close-btn {
   margin-left: auto;
   background: transparent;
   border: none;
@@ -1983,8 +1937,9 @@
   .sidebar--desktop {
     transition: none;
   }
-  .nav-item-label,
-  .sidebar--collapsed .sidebar-logo-text {
+  .sidebar-logo-text,
+  .sidebar--desktop .nav-item-label,
+  .nav-item-label {
     transition: none;
   }
 }
@@ -2008,6 +1963,24 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  flex: 1 1 200px;
+  min-width: 0;
+  align-items: stretch;
+}
+.ep-attendance-filters .ep-select {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+}
+@media (max-width: 640px) {
+  .ep-attendance-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ep-attendance-filters {
+    width: 100%;
+    flex: 1 1 auto;
+  }
 }
 .ep-select {
   position: relative;
@@ -2151,9 +2124,36 @@
 .ep-attendance-card-wrap {
   margin-bottom: 24px;
 }
+.ep-mark-attendance {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 .ep-mark-attendance .ep-attendance-list {
   max-height: min(60vh, 520px);
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Same elevation as .section-card; overflow clips row backgrounds to the radius (no “missing” border on corners). */
+.ep-mark-attendance .ep-attendance-student-card.ep-card {
+  border: none !important;
+  box-shadow:
+    0 0 24px -6px rgb(0 0 0 / 0.1),
+    0 4px 6px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px -2px rgb(0 0 0 / 0.06) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden;
+  background: var(--bg-surface, #fff) !important;
+}
+
+.ep-confirm-dialog-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-700, #334155);
+  font-family: var(--font-body, inherit);
 }
 
 .sections-grid {
@@ -2390,13 +2390,45 @@
   color: var(--text-700, #334155);
   border-color: var(--text-200, #e2e8f0);
 }
+
+/* Mark attendance: narrow screens — P/A/L/E on second row; stable scrollbar gutter. */
 @media (max-width: 640px) {
-  .status-btn {
-    min-width: 42px;
-    min-height: 42px;
-    width: 42px;
-    height: 42px;
-    font-size: 13px;
+  .ep-mark-attendance .student-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 12px 12px 14px;
+    gap: 10px 10px;
+  }
+  .ep-mark-attendance .status-toggle {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    gap: 6px;
+  }
+  .ep-mark-attendance .status-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: auto;
+    min-height: 40px;
+    max-height: 48px;
+    font-size: 12px;
+  }
+  .ep-mark-attendance .student-info {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .ep-mark-attendance .student-fullname {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .ep-mark-attendance .student-avatar-sm {
+    flex-shrink: 0;
   }
 }
 
@@ -2444,23 +2476,25 @@
 }
 
 .attendance-submit-bar {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border, #e2e8f0);
-  padding: 14px 0 14px 0;
-  margin: 0 -4px 0;
+  position: relative;
+  margin-top: 16px;
+  background: var(--bg-surface, #fff);
+  border-radius: 0.75rem;
+  border: none;
+  /* Same as .section-card */
+  box-shadow:
+    0 0 24px -6px rgb(0 0 0 / 0.1),
+    0 4px 6px -1px rgb(0 0 0 / 0.08),
+    0 2px 4px -2px rgb(0 0 0 / 0.06);
+  /* 18px horizontal matches .student-row; increased vertical from 14px. */
+  padding: 20px 18px 22px;
+  margin-left: 0;
+  margin-right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  z-index: 30;
-  box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.06);
 }
 .attendance-counts {
   display: flex;
@@ -2493,5 +2527,25 @@
 }
 .count-dot.excused {
   background: #2563eb;
+}
+
+@media (max-width: 640px) {
+  .ep-mark-attendance .attendance-submit-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px 14px 18px;
+    gap: 16px;
+  }
+  .ep-mark-attendance .attendance-counts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    row-gap: 10px;
+    width: 100%;
+  }
+  .ep-mark-attendance .count-item {
+    font-size: 13px;
+    min-width: 0;
+  }
 }
 

@@ -11,8 +11,6 @@ function readCollapsed(): boolean {
   }
 }
 
-let navCollapseTimer: ReturnType<typeof setTimeout> | null = null;
-
 function persistCollapsed(collapsed: boolean) {
   try {
     localStorage.setItem(COLLAPSED_KEY, collapsed ? '1' : '0');
@@ -28,10 +26,6 @@ interface UIState {
   /** Desktop rail width */
   sidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
-  /** false while text is hidden (during collapse) or not yet shown after expand */
-  navLabelsVisible: boolean;
-  setNavLabelsVisible: (visible: boolean) => void;
-  /** Stagger: collapse hides text first (smooth), then width; expand restores both at once. */
   toggleNavCollapse: () => void;
   /** Global route search (command palette) */
   commandMenuOpen: boolean;
@@ -48,11 +42,9 @@ export const useUIStore = create<UIState>((set, get) => ({
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
 
   sidebarCollapsed: initialCollapsed,
-  navLabelsVisible: !initialCollapsed,
-  setNavLabelsVisible: (navLabelsVisible) => set({ navLabelsVisible }),
   setSidebarCollapsed: (sidebarCollapsed) => {
     persistCollapsed(sidebarCollapsed);
-    set({ sidebarCollapsed, navLabelsVisible: !sidebarCollapsed });
+    set({ sidebarCollapsed });
   },
   commandMenuOpen: false,
   setCommandMenuOpen: (commandMenuOpen) => set({ commandMenuOpen }),
@@ -61,26 +53,8 @@ export const useUIStore = create<UIState>((set, get) => ({
   setAccountDrawerOpen: (accountDrawerOpen) => set({ accountDrawerOpen }),
 
   toggleNavCollapse: () => {
-    if (navCollapseTimer) {
-      clearTimeout(navCollapseTimer);
-      navCollapseTimer = null;
-    }
-    const s = get();
-    /* Mid-collapse: text already hidden, width not yet — restore labels */
-    if (!s.navLabelsVisible && !s.sidebarCollapsed) {
-      set({ navLabelsVisible: true });
-      return;
-    }
-    if (s.sidebarCollapsed) {
-      persistCollapsed(false);
-      set({ sidebarCollapsed: false, navLabelsVisible: true });
-    } else {
-      set({ navLabelsVisible: false });
-      navCollapseTimer = setTimeout(() => {
-        persistCollapsed(true);
-        set({ sidebarCollapsed: true });
-        navCollapseTimer = null;
-      }, 110);
-    }
+    const next = !get().sidebarCollapsed;
+    persistCollapsed(next);
+    set({ sidebarCollapsed: next });
   },
 }));
