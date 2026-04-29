@@ -9,6 +9,7 @@ export function SocialProof() {
         padding: '60px 0',
         borderTop: '1px solid rgba(2, 136, 209, 0.1)',
       }}
+      id='whyskolar'
     >
       <div
         className="container"
@@ -25,20 +26,20 @@ export function SocialProof() {
       >
         {/* Stat Item 1 */}
         <div style={{ flex: '1', minWidth: '200px' }}>
-          <div style={{ 
-            fontSize: '42px', 
-            fontWeight: 800, 
+          <div style={{
+            fontSize: '42px',
+            fontWeight: 800,
             color: '#01579B', // Deep blue for numbers
-            marginBottom: '8px' 
+            marginBottom: '8px'
           }}>
             <CountUp to={200} suffix="+" />
           </div>
-          <div style={{ 
-            fontSize: '16px', 
-            fontWeight: 500, 
-            color: '#546E7A', 
-            textTransform: 'uppercase', 
-            letterSpacing: '1px' 
+          <div style={{
+            fontSize: '16px',
+            fontWeight: 500,
+            color: '#546E7A',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
           }}>
             Partner Schools
           </div>
@@ -49,20 +50,20 @@ export function SocialProof() {
 
         {/* Stat Item 2 */}
         <div style={{ flex: '1', minWidth: '200px' }}>
-          <div style={{ 
-            fontSize: '42px', 
-            fontWeight: 800, 
-            color: '#01579B', 
-            marginBottom: '8px' 
+          <div style={{
+            fontSize: '42px',
+            fontWeight: 800,
+            color: '#01579B',
+            marginBottom: '8px'
           }}>
             <CountUp to={1000} suffix="+" />
           </div>
-          <div style={{ 
-            fontSize: '16px', 
-            fontWeight: 500, 
-            color: '#546E7A', 
-            textTransform: 'uppercase', 
-            letterSpacing: '1px' 
+          <div style={{
+            fontSize: '16px',
+            fontWeight: 500,
+            color: '#546E7A',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
           }}>
             Students Managed
           </div>
@@ -73,20 +74,20 @@ export function SocialProof() {
 
         {/* Stat Item 3 */}
         <div style={{ flex: '1', minWidth: '200px' }}>
-          <div style={{ 
-            fontSize: '42px', 
-            fontWeight: 800, 
+          <div style={{
+            fontSize: '42px',
+            fontWeight: 800,
             color: '#7CB342', // Green color for growth/adoption
-            marginBottom: '8px' 
+            marginBottom: '8px'
           }}>
             <CountUp to={10} suffix="+" />
           </div>
-          <div style={{ 
-            fontSize: '16px', 
-            fontWeight: 500, 
-            color: '#546E7A', 
-            textTransform: 'uppercase', 
-            letterSpacing: '1px' 
+          <div style={{
+            fontSize: '16px',
+            fontWeight: 500,
+            color: '#546E7A',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
           }}>
             Cities Reached
           </div>
