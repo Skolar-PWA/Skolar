@@ -32,7 +32,7 @@ export function Features() {
   return (
     <section id="features" style={{ background: '#fff', padding: isMobile ? '80px 20px' : '120px 20px', position: 'relative', overflow: 'hidden' }}>
 
-      {/* Background Storytelling Shape */}
+   
       <div style={{
         position: 'absolute',
         bottom: '-10%',

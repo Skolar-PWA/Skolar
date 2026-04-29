@@ -59,9 +59,9 @@ export function Testimonials() {
   };
 
   return (
-    <section style={{ padding: '100px 20px', background: '#fff' }}>
+    <section id='testimonials' style={{ padding: '100px 20px', background: '#fff' }}>
       <div className="container" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-        
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -77,9 +77,9 @@ export function Testimonials() {
         </motion.div>
 
         <div style={{ position: 'relative', minHeight: '350px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          
+
           {/* Left Arrow */}
-          <button 
+          <button
             onClick={prevStep}
             style={{
               position: 'absolute', left: '-60px', zIndex: 10, background: '#fff', border: '1px solid #E1F5FE',
@@ -109,15 +109,15 @@ export function Testimonials() {
                 }}
               >
                 <Quote size={40} style={{ position: 'absolute', top: '20px', left: '20px', color: '#B3E5FC', opacity: 0.5 }} />
-                
+
                 <p style={{ fontSize: '20px', color: '#263238', lineHeight: 1.6, fontStyle: 'italic', marginBottom: '30px', fontWeight: 500 }}>
                   &ldquo;{QUOTES[index].quote}&rdquo;
                 </p>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
-                  <img 
-                    src={QUOTES[index].img} 
-                    alt={QUOTES[index].name} 
+                  <img
+                    src={QUOTES[index].img}
+                    alt={QUOTES[index].name}
                     style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #fff' }}
                   />
                   <div style={{ textAlign: 'left' }}>
@@ -130,7 +130,7 @@ export function Testimonials() {
           </div>
 
           {/* Right Arrow */}
-          <button 
+          <button
             onClick={nextStep}
             style={{
               position: 'absolute', right: '-60px', zIndex: 10, background: '#fff', border: '1px solid #E1F5FE',
@@ -145,7 +145,7 @@ export function Testimonials() {
         {/* Dots Indicator */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '30px' }}>
           {QUOTES.map((_, i) => (
-            <div 
+            <div
               key={i}
               onClick={() => setIndex(i)}
               style={{

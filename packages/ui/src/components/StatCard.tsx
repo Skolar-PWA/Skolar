@@ -1,8 +1,6 @@
 import { motion, useSpring, useTransform, useMotionValue } from 'framer-motion';
 import { useEffect } from 'react';
-import { Card } from './Card';
 import { SparklineChart } from './SparklineChart';
-import { Badge } from './Badge';
 
 export interface StatCardProps {
   title: string;
@@ -11,6 +9,7 @@ export interface StatCardProps {
   prefix?: string;
   suffix?: string;
   sparkline?: number[];
+  /** Hex or CSS color for stroke + gradient */
   sparklineColor?: string;
   animateCount?: boolean;
   formatter?: (n: number) => string;
@@ -43,63 +42,45 @@ export function StatCard({
   prefix,
   suffix,
   sparkline,
-  sparklineColor = 'var(--color-primary)',
+  sparklineColor = '#3B82F6',
   animateCount = true,
   formatter,
 }: StatCardProps) {
   const numeric = typeof value === 'number' ? value : null;
   const deltaPositive = delta !== undefined && delta >= 0;
+  const flat = delta === 0;
 
   return (
-    <Card padding="md" interactive>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            gap: 8,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 13,
-              color: 'var(--color-text-secondary)',
-              fontWeight: 500,
-            }}
+    <motion.div
+      className="stat-card"
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.18 }}
+    >
+      <div className="stat-card-top">
+        <span className="stat-card-label">{title}</span>
+        {delta !== undefined && (
+          <span
+            className={`stat-delta ${
+              flat ? 'flat' : deltaPositive ? 'up' : 'down'
+            }`}
           >
-            {title}
-          </div>
-          {delta !== undefined && (
-            <Badge variant={deltaPositive ? 'success' : 'danger'}>
-              {deltaPositive ? '+' : ''}
-              {delta.toFixed(1)}%
-            </Badge>
-          )}
-        </div>
-
-        <div
-          style={{
-            fontSize: 32,
-            fontWeight: 700,
-            fontFamily: 'var(--font-heading)',
-            lineHeight: 1.1,
-            color: 'var(--color-text-primary)',
-          }}
-        >
-          {prefix}
-          {numeric !== null && animateCount ? (
-            <CountUp target={numeric} formatter={formatter} />
-          ) : (
-            value
-          )}
-          {suffix}
-        </div>
-
-        {sparkline && sparkline.length > 1 && (
-          <SparklineChart data={sparkline} color={sparklineColor} height={40} />
+            {deltaPositive ? '+' : ''}
+            {delta.toFixed(1)}%
+          </span>
         )}
       </div>
-    </Card>
+      <div className="stat-card-value">
+        {prefix}
+        {numeric !== null && animateCount ? (
+          <CountUp target={numeric} formatter={formatter} />
+        ) : (
+          value
+        )}
+        {suffix}
+      </div>
+      {sparkline && sparkline.length > 1 && (
+        <SparklineChart data={sparkline} color={sparklineColor} height={52} />
+      )}
+    </motion.div>
   );
 }

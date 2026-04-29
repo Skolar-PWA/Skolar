@@ -1,13 +1,14 @@
-import type { AttendanceStatus, AttendanceType } from '../enums';
+import type { AttendanceStatus } from '../enums';
 
 export interface AttendanceSessionDto {
   id: string;
   sectionId: string;
-  classSubjectId: string | null;
   date: string;
-  type: AttendanceType;
   isLocked: boolean;
   markedById: string;
+  markedByName: string;
+  submittedAt: string | null;
+  isLate: boolean;
   createdAt: string;
 }
 
@@ -17,27 +18,32 @@ export interface AttendanceRecordDto {
   studentId: string;
   status: AttendanceStatus;
   note: string | null;
-  scannedVia: string | null;
+  markedByName: string;
+  markedMethod: string;
+  deviceName: string | null;
 }
 
 export interface MarkAttendanceBody {
   sectionId: string;
-  classSubjectId?: string;
   date: string;
-  type?: AttendanceType;
   records: {
     studentId: string;
     status: AttendanceStatus;
     note?: string;
-    scannedVia?: string;
   }[];
 }
 
 export interface QRScanRequest {
   qrToken: string;
   sessionId?: string;
-  deviceToken?: string;
+  deviceName?: string;
 }
+
+export type QRScanResponseStatus =
+  | 'marked'
+  | 'already_marked'
+  | 'no_session'
+  | 'not_enrolled';
 
 export interface QRScanResponse {
   student: {
@@ -46,6 +52,6 @@ export interface QRScanResponse {
     photoUrl: string | null;
     rollNo: string | null;
   };
-  status: 'marked' | 'already_marked' | 'no_active_session';
+  status: QRScanResponseStatus | 'no_active_session';
   sessionId?: string;
 }

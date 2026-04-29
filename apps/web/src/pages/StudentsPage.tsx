@@ -1,16 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  DataTable,
-  Input,
-  PageHeader,
-  type Column,
-} from '@eduportal/ui';
+import { Avatar, Badge, Button, DataTable, EmptyState, PageHeader, type Column } from '@eduportal/ui';
 import { Plus, Search, Upload } from 'lucide-react';
 import type { StudentDto } from '@eduportal/shared';
 import { studentsService } from '../services/api/students.service';
@@ -38,15 +30,13 @@ export default function StudentsPage() {
       key: 'name',
       header: 'Student',
       render: (s) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Avatar name={`${s.firstName} ${s.lastName}`} src={s.photoUrl} size={32} />
+        <div className="student-cell">
+          <Avatar name={`${s.firstName} ${s.lastName}`} src={s.photoUrl} size={34} />
           <div>
-            <div style={{ fontWeight: 600 }}>
+            <div className="student-name">
               {s.firstName} {s.lastName}
             </div>
-            <div style={{ color: 'var(--color-text-muted)', fontSize: 12 }}>
-              Roll {s.rollNo ?? '—'}
-            </div>
+            <div className="student-roll">Roll {s.rollNo ?? '—'}</div>
           </div>
         </div>
       ),
@@ -64,80 +54,94 @@ export default function StudentsPage() {
       header: 'Gender',
       render: (s) => <Badge variant="neutral">{s.gender ?? '—'}</Badge>,
     },
-    { key: 'qrToken', header: 'QR', render: (s) => <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{s.qrToken.slice(0, 8)}…</span> },
+    {
+      key: 'qrToken',
+      header: 'QR',
+      render: (s) => (
+        <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{s.qrToken.slice(0, 8)}…</span>
+      ),
+    },
   ];
 
   const totalPages = (data?.meta?.totalPages as number | undefined) ?? 1;
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <PageHeader
         title="Students"
         breadcrumbs={[{ label: 'Home', href: '/dashboard' }, { label: 'Students' }]}
         action={
-          <div style={{ display: 'flex', gap: 8 }}>
+          <>
             <Button variant="secondary" leftIcon={<Upload size={14} />}>
               Bulk import
             </Button>
             <Button leftIcon={<Plus size={14} />}>Add student</Button>
-          </div>
+          </>
         }
       />
 
-      <Card padding="sm" style={{ marginBottom: 16 }}>
-        <Input
-          leftIcon={<Search size={14} />}
-          placeholder="Search by name or roll number…"
-          value={search}
-          onChange={(e) => {
-            setPage(1);
-            setSearch(e.target.value);
-          }}
-        />
-      </Card>
+      <div className="list-toolbar">
+        <div className="search-box">
+          <Search aria-hidden />
+          <input
+            type="search"
+            placeholder="Search by name or roll number…"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+            aria-label="Search students"
+          />
+        </div>
+      </div>
 
-      <Card padding="none">
+      <div className="list-card">
         <DataTable
           columns={columns}
           rows={(data?.data as Row[]) ?? []}
           loading={isLoading}
+          empty={
+            <EmptyState
+              icon="👨‍🎓"
+              title="No students yet"
+              description="Add your first student or bulk import from an Excel file."
+              action={<Button leftIcon={<Plus size={14} />}>+ Add Student</Button>}
+            />
+          }
           rowKey={(s) => s.id}
           onRowClick={(s) => nav(`/students/${s.id}`)}
         />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: 12,
-            borderTop: '1px solid var(--color-border)',
-            fontSize: 13,
-            color: 'var(--color-text-secondary)',
-          }}
-        >
-          <div>
-            Page {page} of {totalPages}
+        {(data?.data?.length ?? 0) > 0 && (
+          <div className="table-footer">
+            <div className="table-count">
+              Page {page} of {totalPages}
+            </div>
+            <div className="pagination">
+              <button
+                type="button"
+                className="page-btn"
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                className="page-btn"
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </button>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <Button
-              variant="secondary"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      </Card>
-    </div>
+        )}
+      </div>
+    </motion.div>
   );
 }

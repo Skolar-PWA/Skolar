@@ -17,7 +17,8 @@
   },
   "peerDependencies": {
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "react-router-dom": "^6.22.0"
   },
   "dependencies": {
     "@eduportal/shared": "workspace:*",
@@ -31,6 +32,7 @@
     "@types/react-dom": "^18.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
     "typescript": "^5.6.3"
   }
 }

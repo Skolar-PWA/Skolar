@@ -28,12 +28,15 @@ model Branch {
   city          String?
   contact       String?
 
-  academicYears AcademicYear[]
-  staff         Staff[]
-  students      Student[]
-  classes       Class[]
-  subjects      Subject[]
-  announcements Announcement[]
+  academicYears  AcademicYear[]
+  staff          Staff[]
+  students       Student[]
+  classes        Class[]
+  subjects       Subject[]
+  announcements  Announcement[]
+  branchSettings              BranchSettings?
+  notifications               Notification[]
+  attendanceDeadlineDigests   AttendanceDeadlineDigestLog[]
 
   @@index([schoolGroupId])
 }
@@ -81,6 +84,7 @@ model Section {
   enrollments        Enrollment[]
   timetableSlots     TimetableSlot[]
   attendanceSessions AttendanceSession[]
+  classTeacher       Staff?            @relation("ClassTeacher")
 
   @@index([classId])
 }
@@ -108,7 +112,6 @@ model ClassSubject {
   teacher   Staff?  @relation(fields: [teacherId], references: [id])
 
   timetableSlots     TimetableSlot[]
-  attendanceSessions AttendanceSession[]
   examSubjectResults ExamSubjectResult[]
 
   @@unique([classId, subjectId])
@@ -118,24 +121,29 @@ model ClassSubject {
 // ---------- People ----------
 
 model Staff {
-  id          String   @id @default(uuid())
-  branchId    String
-  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  userId      String?  @unique
-  user        User?    @relation(fields: [userId], references: [id])
-  role        StaffRole
-  firstName   String
-  lastName    String
-  cnic        String   @unique
-  phone       String
-  email       String?
-  photoUrl    String?
-  isActive    Boolean  @default(true)
+  id        String  @id @default(uuid())
+  branchId  String
+  branch    Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  userId    String?  @unique
+  user      User?    @relation(fields: [userId], references: [id])
+  role      StaffRole
+  firstName String
+  lastName  String
+  cnic      String  @unique
+  phone     String
+  email     String?
+  photoUrl  String?
+  isActive  Boolean @default(true)
   joiningDate DateTime?
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  classSubjects     ClassSubject[]
-  attendanceSessions AttendanceSession[]
+  classTeacherOfId String?  @unique
+  classTeacherOf   Section? @relation("ClassTeacher", fields: [classTeacherOfId], references: [id], onDelete: SetNull)
+
+  classSubjects   ClassSubject[]
+  sessionsMarked  AttendanceSession[] @relation("SessionMarkedBy")
+  sessionsLocked  AttendanceSession[] @relation("SessionLockedBy")
+  recordsMarked   AttendanceRecord[]  @relation("RecordMarkedBy")
 
   @@index([branchId])
 }
@@ -213,11 +221,13 @@ model User {
   isActive     Boolean  @default(true)
   lastLoginAt  DateTime?
   createdAt    DateTime @default(now())
+  fcmToken     String?  @db.Text
 
   staff         Staff?
   student       Student?
   parent        Parent?
   refreshTokens RefreshToken[]
+  notifications Notification[] @relation("UserNotifications")
 }
 
 model RefreshToken {
@@ -249,36 +259,98 @@ model TimetableSlot {
 }
 
 model AttendanceSession {
-  id             String   @id @default(uuid())
-  sectionId      String
-  section        Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  classSubjectId String?
-  classSubject   ClassSubject? @relation(fields: [classSubjectId], references: [id])
-  date           DateTime @db.Date
-  markedById     String
-  markedBy       Staff    @relation(fields: [markedById], references: [id])
-  type           AttendanceType @default(daily)
-  isLocked       Boolean  @default(false)
+  id           String   @id @default(uuid())
+  sectionId    String
+  section      Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  date         DateTime @db.Date
+  markedById   String
+  markedBy     Staff    @relation("SessionMarkedBy", fields: [markedById], references: [id])
+  markedByName String
+  submittedAt  DateTime?
+  isLate       Boolean  @default(false)
+  isLocked     Boolean  @default(false)
+  lockedById   String?
+  lockedBy     Staff?   @relation("SessionLockedBy", fields: [lockedById], references: [id])
+  lockedAt     DateTime?
+  createdAt    DateTime @default(now())
 
-  records   AttendanceRecord[]
-  createdAt DateTime @default(now())
+  records AttendanceRecord[]
+  edits   AttendanceEdit[]
 
-  @@unique([sectionId, classSubjectId, date])
+  @@unique([sectionId, date])
   @@index([date])
+  @@index([sectionId])
 }
 
 model AttendanceRecord {
-  id         String @id @default(uuid())
-  sessionId  String
-  session    AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  studentId  String
-  student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  status     AttendanceStatus @default(present)
-  note       String?
-  scannedVia String?
+  id           String @id @default(uuid())
+  sessionId    String
+  session      AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status       AttendanceStatus @default(present)
+  note         String?
+  markedById   String
+  markedBy     Staff   @relation("RecordMarkedBy", fields: [markedById], references: [id])
+  markedByName String
+  markedMethod MarkedMethod @default(manual)
+  deviceName   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@unique([sessionId, studentId])
   @@index([studentId])
+}
+
+model AttendanceEdit {
+  id              String   @id @default(uuid())
+  sessionId       String
+  session         AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  editedById      String
+  editedByName    String
+  editedAt        DateTime @default(now())
+  previousStatus  AttendanceStatus
+  newStatus       AttendanceStatus
+  studentId       String
+  studentName     String
+  reason          String?
+}
+
+model BranchSettings {
+  id                      String  @id @default(uuid())
+  branchId                String  @unique
+  branch                  Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  attendanceDeadlineTime  String  @default("09:30")
+  attendanceEditWindowEnd String  @default("23:59")
+}
+
+/// One row per branch per calendar day after the digest is sent (post attendance deadline).
+model AttendanceDeadlineDigestLog {
+  id         String   @id @default(uuid())
+  branchId   String
+  branch     Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  digestDate DateTime @db.Date
+  sentAt     DateTime @default(now())
+
+  @@unique([branchId, digestDate])
+  @@index([digestDate])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  branchId    String
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  recipientId String
+  recipient   User     @relation("UserNotifications", fields: [recipientId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  title       String
+  body        String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  metadata    Json?
+
+  @@index([recipientId, createdAt])
+  @@index([branchId])
 }
 
 // ---------- Exams & Results ----------
@@ -373,6 +445,7 @@ enum StaffRole {
   admin
   branch_manager
   teacher
+  attendance_substitute
 }
 
 enum UserRole {
@@ -397,9 +470,20 @@ enum EnrollmentStatus {
   dropped
 }
 
-enum AttendanceType {
-  daily
-  subject_wise
+enum MarkedMethod {
+  manual
+  qr_camera
+  qr_fixed_device
+}
+
+enum NotificationType {
+  attendance_late_marking
+  attendance_deadline_digest
+  attendance_absent_student
+  attendance_late_student
+  attendance_excused_student
+  result_published
+  dispute_update
 }
 
 enum AttendanceStatus {

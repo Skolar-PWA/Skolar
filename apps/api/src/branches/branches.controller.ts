@@ -9,8 +9,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 import { BranchesService } from './branches.service';
+import { BranchSettingsService } from './branch-settings.service';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { JwtPayload } from '@eduportal/shared';
+import { UpdateBranchSettingsDto } from './dto/branch-settings.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@eduportal/shared';
 
@@ -20,6 +24,11 @@ class CreateBranchDto {
   @ApiProperty({ required: false }) @IsOptional() @IsString() address?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() city?: string;
   @ApiProperty({ required: false }) @IsOptional() @IsString() contact?: string;
+  @ApiProperty({ required: false, description: 'Daily attendance cutoff (HH:mm, 24h). Default 09:30.' })
+  @IsOptional()
+  @IsString()
+  @Matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
+  attendanceDeadlineTime?: string;
 }
 
 class UpdateBranchDto {
@@ -33,11 +42,29 @@ class UpdateBranchDto {
 @ApiBearerAuth()
 @Controller('branches')
 export class BranchesController {
-  constructor(private readonly service: BranchesService) {}
+  constructor(
+    private readonly service: BranchesService,
+    private readonly branchSettings: BranchSettingsService,
+  ) {}
 
   @Get()
   list(@Query('schoolGroupId') schoolGroupId?: string) {
     return this.service.list(schoolGroupId);
+  }
+
+  @Get(':id/settings')
+  getSettings(@Param('id') id: string, @CurrentUser() actor: JwtPayload) {
+    return this.branchSettings.getForBranch(id, actor);
+  }
+
+  @Roles(UserRole.super_admin, UserRole.school_admin, UserRole.branch_manager)
+  @Patch(':id/settings')
+  patchSettings(
+    @Param('id') id: string,
+    @CurrentUser() actor: JwtPayload,
+    @Body() body: UpdateBranchSettingsDto,
+  ) {
+    return this.branchSettings.updateForBranch(id, actor, body);
   }
 
   @Get(':id')

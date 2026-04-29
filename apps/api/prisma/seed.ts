@@ -134,6 +134,17 @@ async function main() {
     ),
   );
 
+  await prisma.staff.update({
+    where: { id: teacher.id },
+    data: { classTeacherOfId: sections[0]!.id },
+  });
+
+  await prisma.branchSettings.upsert({
+    where: { branchId: branch.id },
+    create: { branchId: branch.id },
+    update: {},
+  });
+
   const subjectsSeed = [
     { name: 'Mathematics', code: 'MATH' },
     { name: 'English', code: 'ENG' },

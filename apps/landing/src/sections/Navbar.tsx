@@ -25,7 +25,8 @@ export function Navbar() {
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'Features', href: '#features' },
-    { name: 'Security', href: '#security' },
+    // { name: 'Security', href: '#how' },
+    { name: 'How It Works', href: '#how' },
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Why Skolar?', href: '#whyskolar' },
     { name: 'Pricing & Plans', href: '#pricing' },
