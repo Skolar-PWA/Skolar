@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Button, Card, LoadingSkeleton, PageHeader, EmptyState } from '@eduportal/ui';
-import { CalendarCheck, QrCode, Search } from 'lucide-react';
+import { CalendarCheck, FileDown, Layers, QrCode, Search } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { attendanceService, type AttendanceSectionCard } from '../../services/api/attendance.service';
 import { SelectMenu, type SelectMenuOption } from '../../components/SelectMenu';
 
@@ -17,10 +18,12 @@ function cardVariant(s: AttendanceSectionCard): 'pending' | 'overdue' | 'marked'
 
 export default function AttendancePage() {
   const today = format(new Date(), 'yyyy-MM-dd');
+  const dateDisplay = format(new Date(), 'EEEE, d MMMM yyyy');
   const { data, isLoading } = useQuery({ queryKey: ['attendance-sections'], queryFn: () => attendanceService.listSections() });
   const [q, setQ] = useState('');
   const [filter, setFilter] = useState<FilterState>('all');
   const [grade, setGrade] = useState<string>('all');
+  const [pdfLoading, setPdfLoading] = useState<'idle' | 'flat' | 'grade'>('idle');
 
   const grades = useMemo(() => {
     if (!data) return [];
@@ -59,6 +62,28 @@ export default function AttendancePage() {
     });
   }, [data, q, filter, grade]);
 
+ 
+  const handleDownloadGradePdf = useCallback(async () => {
+    if (!filtered.length) {
+      toast.error('No sections match your filters. Adjust filters or search, then try again.');
+      return;
+    }
+    setPdfLoading('grade');
+    try {
+      const { downloadAttendanceGradeSectionsPdf } = await import('./AttendancePdfDocument');
+      const generatedAt = new Date().toLocaleString('en-PK', { dateStyle: 'medium', timeStyle: 'short' });
+      await downloadAttendanceGradeSectionsPdf(filtered, { dateIso: today, dateDisplay, generatedAt });
+      toast.success('Grade-wise PDF downloaded');
+    } catch (e) {
+      console.error(e);
+      toast.error('Could not generate PDF. Please try again.');
+    } finally {
+      setPdfLoading('idle');
+    }
+  }, [filtered, today, dateDisplay]);
+
+  const pdfBusy = pdfLoading !== 'idle';
+
   return (
     <div>
       <PageHeader
@@ -66,16 +91,26 @@ export default function AttendancePage() {
         subtitle="Mark attendance for your class or use the QR scanner"
         breadcrumbs={[{ label: 'Home', href: '/dashboard' }, { label: 'Attendance' }]}
         action={
-          <Link to="/attendance/scan">
-            <Button leftIcon={<QrCode size={14} />}>QR Scanner</Button>
-          </Link>
+          <>
+             <Button
+              type="button"
+              variant="secondary"
+              leftIcon={<Layers size={14} />}
+              loading={pdfLoading === 'grade'}
+              disabled={isLoading || !data?.length || !filtered.length || pdfBusy}
+              onClick={handleDownloadGradePdf}
+            >
+              Download PDF
+            </Button>
+            <Link to="/attendance/scan">
+              <Button leftIcon={<QrCode size={14} />}>QR Scanner</Button>
+            </Link>
+          </>
         }
       />
 
       <div className="ep-attendance-toolbar">
-        <p className="ep-attendance-date">
-          {format(new Date(), 'EEEE, d MMMM yyyy')}
-        </p>
+        <p className="ep-attendance-date">{dateDisplay}</p>
         <div className="ep-attendance-filters">
           <SelectMenu
             aria-label="Filter by status"
